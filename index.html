@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Love Countdown 💖</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600&display=swap');
         
@@ -18,6 +20,8 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
+            overflow: hidden;
+            position: relative;
         }
         h1 {
             font-family: 'Pacifico', cursive;
@@ -49,6 +53,23 @@
         button:hover {
             background: #ff6b81;
         }
+        /* Floating Heart Animation */
+        .heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: red;
+            clip-path: polygon(50% 0%, 100% 35%, 82% 100%, 50% 80%, 18% 100%, 0% 35%);
+            opacity: 0.6;
+            animation: float 5s infinite ease-in-out;
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(1); opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
+        audio {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -63,15 +84,23 @@
     <input type="date" id="customDate">
     <button onclick="setCustomCountdown()">Set Countdown</button>
     <div class="countdown" id="customCountdown">Pick a date to start!</div>
+    
+    <h2>💡 AI-Generated Romantic Message</h2>
+    <p id="loveMessage">Loading...</p>
+    
+    <audio id="bgMusic" loop>
+        <source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mp3">
+    </audio>
+    <button onclick="document.getElementById('bgMusic').play()">🎶 Play Romantic Music 🎶</button>
 
     <script>
-        function countdown(targetDate, elementId) {
+        function countdown(targetDate, elementId, eventName) {
             function updateCountdown() {
                 const now = new Date().getTime();
                 const distance = new Date(targetDate).getTime() - now;
                 
                 if (distance < 0) {
-                    document.getElementById(elementId).innerHTML = "🎉 It's today! 🎉";
+                    document.getElementById(elementId).innerHTML = `🎉 It's ${eventName} today! 🎉`;
                     return;
                 }
                 
@@ -80,9 +109,8 @@
                 const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((distance % (1000 * 60)) / 1000);
                 
-                document.getElementById(elementId).innerHTML = `<strong>${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds</strong>`;
+                document.getElementById(elementId).innerHTML = `<strong>${eventName} in ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds</strong>`;
             }
-            
             updateCountdown();
             setInterval(updateCountdown, 1000);
         }
@@ -90,14 +118,36 @@
         function setCustomCountdown() {
             const customDate = document.getElementById("customDate").value;
             if (customDate) {
-                countdown(customDate, "customCountdown");
+                countdown(customDate, "customCountdown", "Our Next Meeting");
             }
         }
 
-        // Initialize countdowns
-        countdown("2025-12-15", "anniversaryCountdown");
-        countdown("2025-03-19", "birthdayCountdown");
-        countdown("2025-08-21", "myBirthdayCountdown");
+        function fetchLoveMessage() {
+            axios.get('https://api.quotable.io/random?tags=love')
+                .then(response => {
+                    document.getElementById("loveMessage").innerText = `💖 "${response.data.content}" - ${response.data.author}`;
+                })
+                .catch(() => {
+                    document.getElementById("loveMessage").innerText = "💖 Love is in the air!";
+                });
+        }
+
+        function createHearts() {
+            for (let i = 0; i < 30; i++) {
+                let heart = document.createElement("div");
+                heart.className = "heart";
+                heart.style.left = Math.random() * 100 + "vw";
+                heart.style.animationDuration = Math.random() * 3 + 2 + "s";
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 5000);
+            }
+        }
+        setInterval(createHearts, 1000);
+
+        countdown("2025-12-15", "anniversaryCountdown", "Our Anniversary");
+        countdown("2025-03-19", "birthdayCountdown", "Her Birthday");
+        countdown("2025-08-21", "myBirthdayCountdown", "My Birthday");
+        fetchLoveMessage();
     </script>
 </body>
 </html>
