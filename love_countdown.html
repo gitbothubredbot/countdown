@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love Countdown 💖</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            background: linear-gradient(to right, #ff758c, #ff7eb3);
+            color: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        h1 {
+            font-family: 'Pacifico', cursive;
+            font-size: 3em;
+        }
+        .countdown {
+            font-size: 1.8em;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px;
+            width: 80%;
+        }
+        input, button {
+            padding: 12px;
+            margin: 10px;
+            font-size: 1.2em;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+        }
+        button {
+            background: #ff4757;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: #ff6b81;
+        }
+    </style>
+</head>
+<body>
+    <h1>💕 Love Countdown 💕</h1>
+    <p>Counting down to our most special moments! 🥰</p>
+    
+    <div class="countdown" id="anniversaryCountdown">Anniversary: Loading...</div>
+    <div class="countdown" id="birthdayCountdown">Her Birthday: Loading...</div>
+    <div class="countdown" id="myBirthdayCountdown">My Birthday: Loading...</div>
+    
+    <h2>Next Time We Meet 💖</h2>
+    <input type="date" id="customDate">
+    <button onclick="setCustomCountdown()">Set Countdown</button>
+    <div class="countdown" id="customCountdown">Pick a date to start!</div>
+
+    <script>
+        function countdown(targetDate, elementId) {
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const distance = new Date(targetDate).getTime() - now;
+                
+                if (distance < 0) {
+                    document.getElementById(elementId).innerHTML = "🎉 It's today! 🎉";
+                    return;
+                }
+                
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                document.getElementById(elementId).innerHTML = `<strong>${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds</strong>`;
+            }
+            
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        }
+
+        function setCustomCountdown() {
+            const customDate = document.getElementById("customDate").value;
+            if (customDate) {
+                countdown(customDate, "customCountdown");
+            }
+        }
+
+        // Initialize countdowns
+        countdown("2025-12-15", "anniversaryCountdown");
+        countdown("2025-03-19", "birthdayCountdown");
+        countdown("2025-08-21", "myBirthdayCountdown");
+    </script>
+</body>
+</html>
+
